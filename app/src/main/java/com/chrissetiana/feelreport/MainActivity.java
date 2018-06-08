@@ -1,5 +1,6 @@
 package com.chrissetiana.feelreport;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -13,9 +14,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Earthquake earthquake = QueryUtils.fetchEarthquakeData(REQUEST_URL);
+        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
+        task.execute(REQUEST_URL);
+    }
 
-        setViews(earthquake);
+    private class EarthquakeAsyncTask extends AsyncTask<String, Void, Earthquake> {
+
+        protected Earthquake doInBackground(String... urls) {
+            Earthquake result = QueryUtils.fetchEarthquakeData(urls[0]);
+            return result;
+        }
+
+        protected void onPostExecute(Earthquake result) {
+            setViews(result);
+        }
     }
 
     private void setViews(Earthquake earthquake) {
