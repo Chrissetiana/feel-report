@@ -18,18 +18,6 @@ public class MainActivity extends AppCompatActivity {
         task.execute(REQUEST_URL);
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, Earthquake> {
-
-        protected Earthquake doInBackground(String... urls) {
-            Earthquake result = QueryUtils.fetchEarthquakeData(urls[0]);
-            return result;
-        }
-
-        protected void onPostExecute(Earthquake result) {
-            setViews(result);
-        }
-    }
-
     private void setViews(Earthquake earthquake) {
         TextView titleTextView = findViewById(R.id.title);
         titleTextView.setText(earthquake.title);
@@ -39,5 +27,25 @@ public class MainActivity extends AppCompatActivity {
 
         TextView magnitudeTextView = findViewById(R.id.perceived_magnitude);
         magnitudeTextView.setText(earthquake.perceivedStrength);
+    }
+
+    private class EarthquakeAsyncTask extends AsyncTask<String, Void, Earthquake> {
+
+        protected Earthquake doInBackground(String... urls) {
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
+            Earthquake result = QueryUtils.fetchEarthquakeData(urls[0]);
+            return result;
+        }
+
+        protected void onPostExecute(Earthquake result) {
+            if (result == null) {
+                return;
+            }
+
+            setViews(result);
+        }
     }
 }
