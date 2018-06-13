@@ -41,6 +41,7 @@ public final class QueryUtils {
             url = new URL(stringUrl);
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Error with creating URL ", e);
+            return null;
         }
         return url;
     }
@@ -56,9 +57,9 @@ public final class QueryUtils {
         InputStream inputStream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(10000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
-            urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
             if (urlConnection.getResponseCode() == 200) {
@@ -100,11 +101,11 @@ public final class QueryUtils {
         }
 
         try {
-            JSONObject baseJsonResponse = new JSONObject(earthquakeJSON);
-            JSONArray featureArray = baseJsonResponse.getJSONArray("features");
+            JSONObject jsonObject = new JSONObject(earthquakeJSON);
+            JSONArray jsonArray = jsonObject.getJSONArray("features");
 
-            if (featureArray.length() > 0) {
-                JSONObject element = featureArray.getJSONObject(0);
+            if (jsonArray.length() > 0) {
+                JSONObject element = jsonArray.getJSONObject(0);
                 JSONObject properties = element.getJSONObject("properties");
 
                 String title = properties.getString("title");
